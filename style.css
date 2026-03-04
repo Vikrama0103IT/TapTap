@@ -1,0 +1,373 @@
+/* ================= BASE RESET ================= */
+
+html {
+  box-sizing: border-box;
+  font-size: 62.5%;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  outline: none;
+}
+
+*:hover, *:active {
+  transition: all ease 0.2s;
+}
+
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 2.2rem;
+  /* Removed solid dark background color to prevent it peeking through */
+  background: transparent; 
+  color: white;
+  overflow: hidden;
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+h1, h2, h3, p, button {
+  margin: 0;
+  padding: 0;
+}
+
+/* ================= MAIN GAME CONTAINER ================= */
+
+.main-wrapper {
+  /* Removed the fallback hex color that caused darkness */
+  background: url('images/bgimage1.jpg') center center / cover no-repeat;
+  width: 100%;
+  height: 100%;
+  /* Changed to fixed to ensure the image stays pinned to the screen edges */
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* ================= WRAPPERS ================= */
+
+.fixed-75w-wrapper {
+  width: 75%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 10;
+}
+
+.page-cont {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  /* Ensured all containers are transparent by default */
+  background: transparent;
+}
+
+/* ================= PAGE ORDER ================= */
+
+.page-game-menu  { z-index: 2; display: none; background: rgba(8, 20, 40, 0.80); }
+.page-play-area  { z-index: 3; display: none; background: transparent; }
+/* Changed the pause menu background from dark rgba to transparent */
+.page-pause-menu { z-index: 4; display: none; background: transparent; }
+
+/* ================= PLAY AREA ================= */
+
+.page-play-area {
+  background: transparent;
+}
+
+.game-stats-cont {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  pointer-events: none;
+  background: transparent;
+}
+
+.gm-stats-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.stat-wrapper {
+  width: 100%;
+  text-align: center;
+}
+
+.gm-stats-title {
+  font-size: 1.2rem;
+}
+
+.gm-stats-value {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+/* ================= GAME SPACE ================= */
+
+.game-space {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  touch-action: none;
+}
+
+/* ================= TAP CIRCLES ================= */
+
+.tpbl-circle {
+  width: clamp(44px, 11vmin, 70px);
+  height: clamp(44px, 11vmin, 70px);
+  position: absolute;
+  border-radius: 50%;
+  z-index: 5;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.tpbl-circle:active {
+  transform: scale(0.85);
+}
+
+/* GOOD CIRCLE */
+
+.c-blue {
+  background: radial-gradient(circle at 36% 30%,
+    #e0faff 0%,
+    #58D1FF 38%,
+    #0099cc 72%,
+    #005f80 100%
+  );
+  box-shadow:
+    0 0 0 3px rgba(88, 209, 255, 0.35),
+    0 0 18px rgba(88, 209, 255, 0.75),
+    0 0 45px rgba(88, 209, 255, 0.25);
+}
+
+.good-circle {
+  animation: blinkBlue 1.4s ease-in-out infinite;
+}
+
+@keyframes blinkBlue {
+  0%   { box-shadow: 0 0 0 3px rgba(88,209,255,0.35), 0 0 18px rgba(88,209,255,0.75), 0 0 45px rgba(88,209,255,0.25); transform: scale(1); }
+  50%  { box-shadow: 0 0 0 8px rgba(88,209,255,0.15), 0 0 35px rgba(88,209,255,1),    0 0 70px rgba(88,209,255,0.6); transform: scale(1.12); }
+  100% { box-shadow: 0 0 0 3px rgba(88,209,255,0.35), 0 0 18px rgba(88,209,255,0.75), 0 0 45px rgba(88,209,255,0.25); transform: scale(1); }
+}
+
+/* BAD CIRCLE */
+
+.c-red {
+  background: radial-gradient(circle at 36% 30%,
+    #ffc0cb 0%,
+    #FA4760 38%,
+    #c0002e 72%,
+    #7a0018 100%
+  );
+  box-shadow:
+    0 0 0 3px rgba(250, 71, 96, 0.35),
+    0 0 18px rgba(250, 71, 96, 0.75),
+    0 0 45px rgba(250, 71, 96, 0.25);
+}
+
+.evil-circle {
+  animation: blinkRed 1.4s ease-in-out infinite;
+}
+
+@keyframes blinkRed {
+  0%   { box-shadow: 0 0 0 3px rgba(250,71,96,0.35), 0 0 18px rgba(250,71,96,0.75), 0 0 45px rgba(250,71,96,0.25); transform: scale(1); }
+  50%  { box-shadow: 0 0 0 8px rgba(250,71,96,0.15), 0 0 35px rgba(250,71,96,1),    0 0 70px rgba(250,71,96,0.6); transform: scale(1.12); }
+  100% { box-shadow: 0 0 0 3px rgba(250,71,96,0.35), 0 0 18px rgba(250,71,96,0.75), 0 0 45px rgba(250,71,96,0.25); transform: scale(1); }
+}
+
+/* ================= HOME PAGE LAYOUT ================= */
+
+.home-layout {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5vh;
+  padding: 0 14%;
+  z-index: 2;
+}
+
+.home-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.home-bottom {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Ball — override tpbl-circle absolute positioning for flex flow */
+.gm-menu-logo-bg {
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  width: clamp(82px, 20vmin, 110px);
+  height: clamp(82px, 20vmin, 110px);
+  animation: ballBlink 1.6s ease-in-out infinite;
+}
+
+@keyframes ballBlink {
+  0%   { transform: scale(1);    box-shadow: 0 0 0 3px rgba(88,209,255,0.35), 0 0 20px rgba(88,209,255,0.8),  0 0 55px rgba(88,209,255,0.3); }
+  50%  { transform: scale(1.15); box-shadow: 0 0 0 10px rgba(88,209,255,0.15), 0 0 45px rgba(88,209,255,1),   0 0 90px rgba(88,209,255,0.6); }
+  100% { transform: scale(1);    box-shadow: 0 0 0 3px rgba(88,209,255,0.35), 0 0 20px rgba(88,209,255,0.8),  0 0 55px rgba(88,209,255,0.3); }
+}
+
+.gm-menu-title {
+  font-size: clamp(3rem, 8vw, 4.8rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #ffffff;
+  text-shadow: 0 2px 24px rgba(88, 209, 255, 0.45);
+  margin: 0;
+}
+
+.gm-menu-subtitle {
+  font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.05em;
+  text-transform: none;
+  margin: 0;
+}
+
+.home-tip {
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.04em;
+  text-transform: none;
+  margin: 0;
+}
+
+.tip-blue { color: #58D1FF; }
+.tip-red  { color: #FA4760; }
+
+/* ================= BUTTONS ================= */
+
+.gm-btn {
+  display: block;
+  width: 100%;
+  background: none;
+  font-size: 1em;
+  color: white;
+  padding: 0.8em 0;
+  border-radius: 3em;
+  margin: 0 auto 0.9em;
+  font-weight: 300;
+  border: 2px solid white;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.gm-btn:active {
+  transform: scale(1.1);
+  background: white;
+  color: rgba(11, 29, 49, 1);
+}
+
+.btn-blue {
+  border-color: #58D1FF;
+  font-weight: 600;
+}
+
+.btn-blue:active {
+  background: #58D1FF;
+}
+
+/* ================= WRONG POPUP ================= */
+
+.wrong-popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: rgba(250, 71, 96, 0.95);
+  color: white;
+  font-size: 3.5rem;
+  font-weight: 600;
+  padding: 0.35em 0.9em;
+  border-radius: 0.4em;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.wrong-popup.show-wrong {
+  animation: wrongAnim 0.9s ease-in-out forwards;
+}
+
+@keyframes wrongAnim {
+  0%   { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  20%  { transform: translate(-50%, -50%) scale(1.2); }
+  70%  { transform: translate(-50%, -50%) scale(1); }
+  100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* Landscape mode */
+@media screen and (orientation: landscape) {
+  .home-layout {
+    gap: 3vh;
+    padding: 0 22%;
+  }
+
+  .home-top {
+    gap: 8px;
+  }
+
+  .gm-menu-logo-bg {
+    width: clamp(44px, 11vmin, 68px);
+    height: clamp(44px, 11vmin, 68px);
+  }
+
+  .gm-menu-title {
+    font-size: clamp(2rem, 6vw, 3rem);
+  }
+
+  .fixed-75w-wrapper {
+    width: 55%;
+  }
+}
+
+@media screen and (max-height: 480px) {
+  body {
+    font-size: 1.6rem;
+  }
+}
