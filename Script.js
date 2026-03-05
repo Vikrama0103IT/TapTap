@@ -16,6 +16,7 @@ var pmCntnuGmBtn = document.querySelector('#pmCntnuGmBtn');
 // Sounds
 var soundBlue = new Audio('sounds/mp3/success.mp3');
 var soundRed  = new Audio('sounds/mp3/wronganswer.mp3');
+soundRed.volume = 0.3;
 
 // All available colors
 var colors = [
