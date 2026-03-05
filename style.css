@@ -138,6 +138,11 @@ h1, h2, h3, p, button {
 
 /* ================= TAP CIRCLES ================= */
 
+@keyframes ballBlink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.92); }
+}
+
 .tpbl-circle {
   width: clamp(44px, 11vmin, 70px);
   height: clamp(44px, 11vmin, 70px);
@@ -146,10 +151,12 @@ h1, h2, h3, p, button {
   z-index: 5;
   cursor: pointer;
   touch-action: none;
+  animation: ballBlink 1s ease-in-out infinite;
 }
 
 .tpbl-circle:active {
   transform: scale(0.85);
+  animation-play-state: paused;
 }
 
 /* GOOD CIRCLE */

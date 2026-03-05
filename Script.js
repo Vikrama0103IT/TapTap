@@ -113,7 +113,7 @@ var circlesEngine = {
                 });
                 this.startAutoMove();
             }, 300);
-        },800);
+        },1000);
     },
 
     randomize: function(el) {
