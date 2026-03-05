@@ -85,6 +85,9 @@ var circlesEngine = {
                 var cx = parseInt(el.style.left) + el.offsetWidth / 2;
                 var cy = parseInt(el.style.top) + el.offsetHeight / 2;
                 gameEngine.wrongTap(cx, cy);
+                setTimeout(() => {
+                    this.showInstruction(this.targetColor, null);
+                }, 600);
             }
         });
 
@@ -109,7 +112,7 @@ var circlesEngine = {
                 });
                 this.startAutoMove();
             }, 300);
-        }, 500);
+        },800);
     },
 
     randomize: function(el) {
