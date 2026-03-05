@@ -38,7 +38,7 @@
 				<!-- Hint + button -->
 				<div class="home-bottom">
 					<p class="home-tip">
-						Tap <span class="tip-blue">&#9679;</span> blue &nbsp;&middot;&nbsp; Avoid <span class="tip-red">&#9679;</span> red
+						Tap the <span class="tip-blue">color</span> shown &nbsp;&middot;&nbsp; Avoid <span class="tip-red">others</span>
 					</p>
 					<button id="newGameBtn" class="gm-btn btn-blue" type="button">Tap to Play</button>
 				</div>
@@ -59,6 +59,15 @@
 					</div>
 				</div>
 			</div>
+
+			<!-- Color Instruction Overlay -->
+			<div id="colorInstruction" class="color-instruction">
+				<p class="ci-label">TAP THE</p>
+				<div id="ciColorBall" class="tpbl-circle ci-ball c-blue"></div>
+				<p id="ciColorName" class="ci-color-name">BLUE</p>
+				<p class="ci-label">BALL !</p>
+			</div>
+
 			<div id="wrongPopup" class="wrong-popup">WRONG!</div>
 			<div id="gameSpace" class="game-space">
 				<!-- Where the magic happens -->

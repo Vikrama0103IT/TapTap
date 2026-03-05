@@ -193,13 +193,69 @@ h1, h2, h3, p, button {
 }
 
 .evil-circle {
-  animation: blinkRed 1.4s ease-in-out infinite;
+  animation: blinkEvil 1.4s ease-in-out infinite;
 }
 
-@keyframes blinkRed {
-  0%   { box-shadow: 0 0 0 3px rgba(250,71,96,0.35), 0 0 18px rgba(250,71,96,0.75), 0 0 45px rgba(250,71,96,0.25); transform: scale(1); }
-  50%  { box-shadow: 0 0 0 8px rgba(250,71,96,0.15), 0 0 35px rgba(250,71,96,1),    0 0 70px rgba(250,71,96,0.6); transform: scale(1.12); }
-  100% { box-shadow: 0 0 0 3px rgba(250,71,96,0.35), 0 0 18px rgba(250,71,96,0.75), 0 0 45px rgba(250,71,96,0.25); transform: scale(1); }
+@keyframes blinkEvil {
+  0%   { transform: scale(1);    opacity: 0.9; }
+  50%  { transform: scale(1.12); opacity: 1;   }
+  100% { transform: scale(1);    opacity: 0.9; }
+}
+
+/* GREEN */
+.c-green {
+  background: radial-gradient(circle at 36% 30%,
+    #d4ffdf 0%,
+    #4CDE7A 38%,
+    #1a9e3f 72%,
+    #0a5c24 100%
+  );
+  box-shadow:
+    0 0 0 3px rgba(76, 222, 122, 0.35),
+    0 0 18px rgba(76, 222, 122, 0.75),
+    0 0 45px rgba(76, 222, 122, 0.25);
+}
+
+/* YELLOW */
+.c-yellow {
+  background: radial-gradient(circle at 36% 30%,
+    #fffde0 0%,
+    #FFE033 38%,
+    #cc9a00 72%,
+    #7a5c00 100%
+  );
+  box-shadow:
+    0 0 0 3px rgba(255, 224, 51, 0.35),
+    0 0 18px rgba(255, 224, 51, 0.75),
+    0 0 45px rgba(255, 224, 51, 0.25);
+}
+
+/* ORANGE */
+.c-orange {
+  background: radial-gradient(circle at 36% 30%,
+    #ffe8d0 0%,
+    #FF8C33 38%,
+    #cc5200 72%,
+    #7a2e00 100%
+  );
+  box-shadow:
+    0 0 0 3px rgba(255, 140, 51, 0.35),
+    0 0 18px rgba(255, 140, 51, 0.75),
+    0 0 45px rgba(255, 140, 51, 0.25);
+}
+
+/* PURPLE */
+.c-purple {
+  background: radial-gradient(circle at 36% 30%,
+    #f0d0ff 0%,
+    #B94FFF 38%,
+    #7a00cc 72%,
+    #420080 100%
+  );
+  box-shadow:
+    0 0 0 3px rgba(185, 79, 255, 0.35),
+    0 0 18px rgba(185, 79, 255, 0.75),
+    0 0 45px rgba(185, 79, 255, 0.25);
 }
 
 /* ================= HOME PAGE LAYOUT ================= */
@@ -308,6 +364,51 @@ h1, h2, h3, p, button {
 
 .btn-blue:active {
   background: #58D1FF;
+}
+
+/* ================= COLOR INSTRUCTION OVERLAY ================= */
+
+.color-instruction {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 18;
+  background: rgba(0, 0, 0, 0.72);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  animation: ciPop 0.3s ease-out;
+}
+
+@keyframes ciPop {
+  0%   { opacity: 0; transform: scale(0.92); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.ci-label {
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 0.2em;
+  margin: 0;
+}
+
+.ci-ball {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  width: clamp(64px, 16vmin, 95px);
+  height: clamp(64px, 16vmin, 95px);
+  pointer-events: none;
+  animation: ballBlink 1.4s ease-in-out infinite;
+}
+
+.ci-color-name {
+  font-size: clamp(3.4rem, 10vw, 6rem);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  margin: 0;
 }
 
 /* ================= WRONG POPUP ================= */

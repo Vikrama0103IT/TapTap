@@ -17,6 +17,16 @@ var pmCntnuGmBtn = document.querySelector('#pmCntnuGmBtn');
 var soundBlue = new Audio('sounds/mp3/success.mp3');
 var soundRed  = new Audio('sounds/mp3/wronganswer.mp3');
 
+// All available colors
+var colors = [
+    { cls: 'c-blue',   name: 'BLUE',   hex: '#58D1FF' },
+    { cls: 'c-red',    name: 'RED',    hex: '#FA4760' },
+    { cls: 'c-green',  name: 'GREEN',  hex: '#4CDE7A' },
+    { cls: 'c-yellow', name: 'YELLOW', hex: '#FFE033' },
+    { cls: 'c-orange', name: 'ORANGE', hex: '#FF8C33' },
+    { cls: 'c-purple', name: 'PURPLE', hex: '#B94FFF' },
+];
+
 var toolsBox = {
     gnrtRndmNum: function(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -36,14 +46,33 @@ var toolsBox = {
 
 var circlesEngine = {
     autoMoveTimer: null,
-    create: function(isGood) {
+    targetColor: null,
+
+    showInstruction: function(colorObj, callback) {
+        var overlay = document.getElementById('colorInstruction');
+        var ball    = document.getElementById('ciColorBall');
+        var nameEl  = document.getElementById('ciColorName');
+
+        ball.className  = 'tpbl-circle ci-ball ' + colorObj.cls;
+        nameEl.textContent = colorObj.name;
+        nameEl.style.color = colorObj.hex;
+        nameEl.style.textShadow = '0 0 20px ' + colorObj.hex;
+
+        overlay.style.display = 'flex';
+
+        setTimeout(function() {
+            overlay.style.display = 'none';
+            if (callback) callback();
+        }, 1800);
+    },
+
+    create: function(colorObj) {
         var el = document.createElement('div');
-        el.className = isGood
-            ? 'tpbl-circle c-blue good-circle'
-            : 'tpbl-circle c-red evil-circle';
+        el.className = 'tpbl-circle tap-ball ' + colorObj.cls;
+        el.dataset.colorCls = colorObj.cls;
 
         toolsBox.onClick(el, () => {
-            if (isGood) {
+            if (el.dataset.colorCls === this.targetColor.cls) {
                 soundBlue.currentTime = 0;
                 soundBlue.play();
                 gameEngine.score++;
@@ -61,10 +90,11 @@ var circlesEngine = {
         gameSpace.appendChild(el);
         this.randomize(el);
     },
+
     startAutoMove: function() {
         if (this.autoMoveTimer) clearTimeout(this.autoMoveTimer);
         this.autoMoveTimer = setTimeout(() => {
-            var allCircles = document.querySelectorAll('.tpbl-circle');
+            var allCircles = gameSpace.querySelectorAll('.tap-ball');
             allCircles.forEach(el => {
                 el.style.transition = 'opacity 0.3s';
                 el.style.opacity = '0';
@@ -78,24 +108,64 @@ var circlesEngine = {
                 });
                 this.startAutoMove();
             }, 300);
-        }, 2000);
+        }, 1000);
     },
+
     randomize: function(el) {
         var pad = 70;
-        var x = toolsBox.gnrtRndmNum(pad, gameSpace.offsetWidth  - pad);
-        var y = toolsBox.gnrtRndmNum(pad, gameSpace.offsetHeight - pad);
+        var minDist = 75;
+        var maxAttempts = 60;
+        var attempts = 0;
+        var x, y, overlaps;
+
+        do {
+            x = toolsBox.gnrtRndmNum(pad, gameSpace.offsetWidth  - pad);
+            y = toolsBox.gnrtRndmNum(pad, gameSpace.offsetHeight - pad);
+            overlaps = false;
+
+            gameSpace.querySelectorAll('.tap-ball').forEach(function(other) {
+                if (other !== el) {
+                    var ox = parseInt(other.style.left);
+                    var oy = parseInt(other.style.top);
+                    var dist = Math.sqrt((x - ox) * (x - ox) + (y - oy) * (y - oy));
+                    if (dist < minDist) overlaps = true;
+                }
+            });
+
+            attempts++;
+        } while (overlaps && attempts < maxAttempts);
+
         el.style.left = x + 'px';
         el.style.top  = y + 'px';
     },
+
     resetBoard: function() {
         if (this.autoMoveTimer) {
             clearTimeout(this.autoMoveTimer);
             this.autoMoveTimer = null;
         }
         gameSpace.innerHTML = '';
-        this.create(true);
-        for (var i = 0; i < 4; i++) this.create(false);
-        this.startAutoMove();
+
+        // Pick a random target color
+        var targetIdx = toolsBox.gnrtRndmNum(0, colors.length - 1);
+        this.targetColor = colors[targetIdx];
+
+        // Build 7 balls: 1 of target color + 6 from remaining colors
+        var otherColors = colors.filter((_, i) => i !== targetIdx);
+        var ballColorList = [this.targetColor];
+        for (var i = 0; i < 6; i++) {
+            ballColorList.push(otherColors[i % otherColors.length]);
+        }
+        // Shuffle so target ball is in random position
+        ballColorList.sort(() => Math.random() - 0.5);
+
+        var self = this;
+        ballColorList.forEach(function(c) { self.create(c); });
+
+        // Show "Tap the [COLOR] ball!" overlay, then start auto-move
+        this.showInstruction(this.targetColor, function() {
+            self.startAutoMove();
+        });
     }
 };
 
@@ -118,7 +188,6 @@ var gameEngine = {
         popup.classList.remove('show-wrong');
         void popup.offsetWidth;
         popup.classList.add('show-wrong');
-        circlesEngine.resetBoard();
     }
 };
 
@@ -136,7 +205,7 @@ document.addEventListener('touchmove', (e) => e.preventDefault(), { passive: fal
 // Reposition circles on orientation change so nothing is cut off
 window.addEventListener('resize', function() {
     if (pagePlayArea.style.display === 'block') {
-        document.querySelectorAll('.good-circle, .evil-circle').forEach(function(c) {
+        gameSpace.querySelectorAll('.tap-ball').forEach(function(c) {
             circlesEngine.randomize(c);
         });
     }
