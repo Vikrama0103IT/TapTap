@@ -314,8 +314,8 @@ h1, h2, h3, p, button {
 
 .wrong-popup {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 0;
+  left: 0;
   transform: translate(-50%, -50%) scale(0);
   background: rgba(250, 71, 96, 0.95);
   color: white;

@@ -14,8 +14,8 @@ var pmRstrtLvlBtn = document.querySelector('#pmRstrtLvlBtn');
 var pmCntnuGmBtn = document.querySelector('#pmCntnuGmBtn');
 
 // Sounds
-var soundBlue = new Audio('sounds/mp3/touchBlue.mp3');
-var soundRed  = new Audio('sounds/mp3/touchRed.mp3');
+var soundBlue = new Audio('sounds/mp3/success.mp3');
+var soundRed  = new Audio('sounds/mp3/wronganswer.mp3');
 
 var toolsBox = {
     gnrtRndmNum: function(min, max) {
@@ -35,9 +35,9 @@ var toolsBox = {
 };
 
 var circlesEngine = {
+    autoMoveTimer: null,
     create: function(isGood) {
         var el = document.createElement('div');
-        // good-circle / evil-circle classes keep the blink animations active
         el.className = isGood
             ? 'tpbl-circle c-blue good-circle'
             : 'tpbl-circle c-red evil-circle';
@@ -52,12 +52,33 @@ var circlesEngine = {
             } else {
                 soundRed.currentTime = 0;
                 soundRed.play();
-                gameEngine.wrongTap();
+                var cx = parseInt(el.style.left) + el.offsetWidth / 2;
+                var cy = parseInt(el.style.top) + el.offsetHeight / 2;
+                gameEngine.wrongTap(cx, cy);
             }
         });
 
         gameSpace.appendChild(el);
         this.randomize(el);
+    },
+    startAutoMove: function() {
+        if (this.autoMoveTimer) clearTimeout(this.autoMoveTimer);
+        this.autoMoveTimer = setTimeout(() => {
+            var allCircles = document.querySelectorAll('.tpbl-circle');
+            allCircles.forEach(el => {
+                el.style.transition = 'opacity 0.3s';
+                el.style.opacity = '0';
+            });
+            setTimeout(() => {
+                allCircles.forEach(el => {
+                    if (el.parentNode) {
+                        this.randomize(el);
+                        el.style.opacity = '1';
+                    }
+                });
+                this.startAutoMove();
+            }, 300);
+        }, 2000);
     },
     randomize: function(el) {
         var pad = 70;
@@ -67,9 +88,14 @@ var circlesEngine = {
         el.style.top  = y + 'px';
     },
     resetBoard: function() {
+        if (this.autoMoveTimer) {
+            clearTimeout(this.autoMoveTimer);
+            this.autoMoveTimer = null;
+        }
         gameSpace.innerHTML = '';
         this.create(true);
         for (var i = 0; i < 4; i++) this.create(false);
+        this.startAutoMove();
     }
 };
 
@@ -85,10 +111,12 @@ var gameEngine = {
         toolsBox.showPage(pagePlayArea);
         circlesEngine.resetBoard();
     },
-    wrongTap: function() {
+    wrongTap: function(x, y) {
         var popup = document.querySelector('#wrongPopup');
+        popup.style.left = x + 'px';
+        popup.style.top  = y + 'px';
         popup.classList.remove('show-wrong');
-        void popup.offsetWidth; // force reflow so animation restarts cleanly
+        void popup.offsetWidth;
         popup.classList.add('show-wrong');
         circlesEngine.resetBoard();
     }
