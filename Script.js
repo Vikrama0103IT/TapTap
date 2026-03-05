@@ -49,21 +49,22 @@ var circlesEngine = {
     targetColor: null,
 
     showInstruction: function(colorObj, callback) {
-        var overlay = document.getElementById('colorInstruction');
-        var ball    = document.getElementById('ciColorBall');
-        var nameEl  = document.getElementById('ciColorName');
+        var toast  = document.getElementById('colorToast');
+        var ball   = document.getElementById('ciColorBall');
+        var nameEl = document.getElementById('ciColorName');
 
-        ball.className  = 'tpbl-circle ci-ball ' + colorObj.cls;
+        ball.className = 'toast-ball ' + colorObj.cls;
         nameEl.textContent = colorObj.name;
         nameEl.style.color = colorObj.hex;
-        nameEl.style.textShadow = '0 0 20px ' + colorObj.hex;
 
-        overlay.style.display = 'flex';
+        toast.classList.remove('toast-show');
+        void toast.offsetWidth; // reflow so animation restarts
+        toast.classList.add('toast-show');
 
         setTimeout(function() {
-            overlay.style.display = 'none';
+            toast.classList.remove('toast-show');
             if (callback) callback();
-        }, 1800);
+        }, 1700);
     },
 
     create: function(colorObj) {
@@ -108,7 +109,7 @@ var circlesEngine = {
                 });
                 this.startAutoMove();
             }, 300);
-        }, 1000);
+        }, 500);
     },
 
     randomize: function(el) {
