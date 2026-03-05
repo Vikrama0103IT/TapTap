@@ -78,7 +78,7 @@ var circlesEngine = {
                 });
                 this.startAutoMove();
             }, 300);
-        }, 2000);
+        }, 1000);
     },
     randomize: function(el) {
         var pad = 70;
