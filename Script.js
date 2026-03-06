@@ -47,6 +47,7 @@ var toolsBox = {
 
 var circlesEngine = {
     autoMoveTimer: null,
+    instructionTimer: null,
     targetColor: null,
 
     showInstruction: function(colorObj, callback) {
@@ -54,15 +55,21 @@ var circlesEngine = {
         var ball   = document.getElementById('ciColorBall');
         var nameEl = document.getElementById('ciColorName');
 
+        // Cancel any previous pending instruction timer
+        if (this.instructionTimer) {
+            clearTimeout(this.instructionTimer);
+            this.instructionTimer = null;
+        }
+
         ball.className = 'toast-ball ' + colorObj.cls;
         nameEl.textContent = colorObj.name;
         nameEl.style.color = colorObj.hex;
 
         toast.classList.remove('toast-show');
-        void toast.offsetWidth; // reflow so animation restarts
+        void toast.offsetWidth;
         toast.classList.add('toast-show');
 
-        setTimeout(function() {
+        this.instructionTimer = setTimeout(function() {
             toast.classList.remove('toast-show');
             if (callback) callback();
         }, 1700);
@@ -155,12 +162,9 @@ var circlesEngine = {
         var targetIdx = toolsBox.gnrtRndmNum(0, colors.length - 1);
         this.targetColor = colors[targetIdx];
 
-        // Build 7 balls: 1 of target color + 6 from remaining colors
+        // Build 6 balls: all colors used exactly once
         var otherColors = colors.filter((_, i) => i !== targetIdx);
-        var ballColorList = [this.targetColor];
-        for (var i = 0; i < 6; i++) {
-            ballColorList.push(otherColors[i % otherColors.length]);
-        }
+        var ballColorList = [this.targetColor].concat(otherColors);
         // Shuffle so target ball is in random position
         ballColorList.sort(() => Math.random() - 0.5);
 

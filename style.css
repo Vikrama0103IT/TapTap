@@ -48,7 +48,7 @@ h1, h2, h3, p, button {
 
 .main-wrapper {
   /* Removed the fallback hex color that caused darkness */
-  background: url('images/bgimage1.jpg') center center / cover no-repeat;
+  background: url('images/gamebg.png') center center / cover no-repeat;
   width: 100%;
   height: 100%;
   /* Changed to fixed to ensure the image stays pinned to the screen edges */
@@ -138,9 +138,42 @@ h1, h2, h3, p, button {
 
 /* ================= TAP CIRCLES ================= */
 
-@keyframes ballBlink {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.4; transform: scale(0.92); }
+/* Ball pulse keyframe — subtle breathe effect */
+@keyframes ballPulse {
+  0%,100% { transform: scale(1);    }
+  50%     { transform: scale(1.07); }
+}
+
+/* Ripple ring that expands outward */
+@keyframes ballRipple {
+  0%   { transform: scale(1);    opacity: 0.7; }
+  100% { transform: scale(2.4);  opacity: 0;   }
+}
+
+/* Per-color glow pulse on the ball itself */
+@keyframes glowBlue   {
+  0%,100% { box-shadow: 0 0 8px 2px rgba(88,209,255,0.5),  0 0 20px rgba(88,209,255,0.3); }
+  50%     { box-shadow: 0 0 22px 6px rgba(88,209,255,0.9),  0 0 50px rgba(88,209,255,0.5); }
+}
+@keyframes glowRed    {
+  0%,100% { box-shadow: 0 0 8px 2px rgba(250,71,96,0.5),   0 0 20px rgba(250,71,96,0.3); }
+  50%     { box-shadow: 0 0 22px 6px rgba(250,71,96,0.9),   0 0 50px rgba(250,71,96,0.5); }
+}
+@keyframes glowGreen  {
+  0%,100% { box-shadow: 0 0 8px 2px rgba(76,222,122,0.5),  0 0 20px rgba(76,222,122,0.3); }
+  50%     { box-shadow: 0 0 22px 6px rgba(76,222,122,0.9),  0 0 50px rgba(76,222,122,0.5); }
+}
+@keyframes glowYellow {
+  0%,100% { box-shadow: 0 0 8px 2px rgba(255,224,51,0.5),  0 0 20px rgba(255,224,51,0.3); }
+  50%     { box-shadow: 0 0 22px 6px rgba(255,224,51,0.9),  0 0 50px rgba(255,224,51,0.5); }
+}
+@keyframes glowOrange {
+  0%,100% { box-shadow: 0 0 8px 2px rgba(255,140,51,0.5),  0 0 20px rgba(255,140,51,0.3); }
+  50%     { box-shadow: 0 0 22px 6px rgba(255,140,51,0.9),  0 0 50px rgba(255,140,51,0.5); }
+}
+@keyframes glowPurple {
+  0%,100% { box-shadow: 0 0 8px 2px rgba(185,79,255,0.5),  0 0 20px rgba(185,79,255,0.3); }
+  50%     { box-shadow: 0 0 22px 6px rgba(185,79,255,0.9),  0 0 50px rgba(185,79,255,0.5); }
 }
 
 .tpbl-circle {
@@ -151,11 +184,38 @@ h1, h2, h3, p, button {
   z-index: 5;
   cursor: pointer;
   touch-action: none;
-  animation: ballBlink 1s ease-in-out infinite;
+  animation: ballPulse 1.4s ease-in-out infinite;
 }
+
+/* Soft color spread via ::before and ::after */
+.tpbl-circle::before,
+.tpbl-circle::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(var(--cr), var(--cg), var(--cb), 0.35) 0%, transparent 65%);
+  pointer-events: none;
+  animation: ballRipple 1.8s ease-out infinite;
+}
+.tpbl-circle::after {
+  animation-delay: 0.9s;
+}
+
+/* Color-specific: CSS vars for ripple color + glow animation */
+.tpbl-circle.c-blue   { --cr:88;  --cg:209; --cb:255; animation: ballPulse 1.4s ease-in-out infinite, glowBlue   1.4s ease-in-out infinite; }
+.tpbl-circle.c-red    { --cr:250; --cg:71;  --cb:96;  animation: ballPulse 1.4s ease-in-out infinite, glowRed    1.4s ease-in-out infinite; }
+.tpbl-circle.c-green  { --cr:76;  --cg:222; --cb:122; animation: ballPulse 1.4s ease-in-out infinite, glowGreen  1.4s ease-in-out infinite; }
+.tpbl-circle.c-yellow { --cr:255; --cg:224; --cb:51;  animation: ballPulse 1.4s ease-in-out infinite, glowYellow 1.4s ease-in-out infinite; }
+.tpbl-circle.c-orange { --cr:255; --cg:140; --cb:51;  animation: ballPulse 1.4s ease-in-out infinite, glowOrange 1.4s ease-in-out infinite; }
+.tpbl-circle.c-purple { --cr:185; --cg:79;  --cb:255; animation: ballPulse 1.4s ease-in-out infinite, glowPurple 1.4s ease-in-out infinite; }
 
 .tpbl-circle:active {
   transform: scale(0.85);
+  animation-play-state: paused;
+}
+.tpbl-circle:active::before,
+.tpbl-circle:active::after {
   animation-play-state: paused;
 }
 
@@ -302,10 +362,10 @@ h1, h2, h3, p, button {
   transform: none;
   width: clamp(82px, 20vmin, 110px);
   height: clamp(82px, 20vmin, 110px);
-  animation: ballBlink 1.6s ease-in-out infinite;
+  animation: ballBlinkLogo 1.6s ease-in-out infinite;
 }
 
-@keyframes ballBlink {
+@keyframes ballBlinkLogo {
   0%   { transform: scale(1);    box-shadow: 0 0 0 3px rgba(88,209,255,0.35), 0 0 20px rgba(88,209,255,0.8),  0 0 55px rgba(88,209,255,0.3); }
   50%  { transform: scale(1.15); box-shadow: 0 0 0 10px rgba(88,209,255,0.15), 0 0 45px rgba(88,209,255,1),   0 0 90px rgba(88,209,255,0.6); }
   100% { transform: scale(1);    box-shadow: 0 0 0 3px rgba(88,209,255,0.35), 0 0 20px rgba(88,209,255,0.8),  0 0 55px rgba(88,209,255,0.3); }
@@ -432,9 +492,9 @@ h1, h2, h3, p, button {
   transform: translate(-50%, -50%) scale(0);
   background: rgba(250, 71, 96, 0.95);
   color: white;
-  font-size: 3.5rem;
+  font-size: 2rem;
   font-weight: 600;
-  padding: 0.35em 0.9em;
+  padding: 0.25em 0.7em;
   border-radius: 0.4em;
   z-index: 20;
   pointer-events: none;
