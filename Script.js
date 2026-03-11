@@ -49,6 +49,7 @@ var circlesEngine = {
     autoMoveTimer: null,
     instructionTimer: null,
     targetColor: null,
+    blinkCount: 0,
 
     showInstruction: function(colorObj, callback) {
         var toast  = document.getElementById('colorToast');
@@ -81,6 +82,7 @@ var circlesEngine = {
         el.dataset.colorCls = colorObj.cls;
 
         toolsBox.onClick(el, () => {
+            this.blinkCount = 0;
             if (el.dataset.colorCls === this.targetColor.cls) {
                 soundBlue.currentTime = 0;
                 soundBlue.play();
@@ -118,9 +120,27 @@ var circlesEngine = {
                         el.style.opacity = '1';
                     }
                 });
-                this.startAutoMove();
+
+                this.blinkCount++;
+
+                if (this.blinkCount >= 3) {
+                    this.blinkCount = 0;
+                    // Pick a new target color (different from current)
+                    var newIdx;
+                    do {
+                        newIdx = toolsBox.gnrtRndmNum(0, colors.length - 1);
+                    } while (colors[newIdx].cls === this.targetColor.cls);
+                    this.targetColor = colors[newIdx];
+
+                    var self = this;
+                    this.showInstruction(this.targetColor, function() {
+                        self.startAutoMove();
+                    });
+                } else {
+                    this.startAutoMove();
+                }
             }, 300);
-        },1000);
+        }, 1000);
     },
 
     randomize: function(el) {
@@ -156,6 +176,7 @@ var circlesEngine = {
             clearTimeout(this.autoMoveTimer);
             this.autoMoveTimer = null;
         }
+        this.blinkCount = 0;
         gameSpace.innerHTML = '';
 
         // Pick a random target color
