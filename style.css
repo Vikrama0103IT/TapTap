@@ -212,11 +212,9 @@ h1, h2, h3, p, button {
 
 .tpbl-circle:active {
   transform: scale(0.85);
-  animation-play-state: paused;
 }
 .tpbl-circle:active::before,
 .tpbl-circle:active::after {
-  animation-play-state: paused;
 }
 
 /* GOOD CIRCLE */

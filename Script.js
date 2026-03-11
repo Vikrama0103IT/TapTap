@@ -99,11 +99,7 @@ var circlesEngine = {
                     clearTimeout(this.autoMoveTimer);
                     this.autoMoveTimer = null;
                 }
-                setTimeout(() => {
-                    this.showInstruction(this.targetColor, () => {
-                        this.startAutoMove();
-                    });
-                }, 600);
+                this.startAutoMove();
             }
         });
 
