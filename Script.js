@@ -95,8 +95,14 @@ var circlesEngine = {
                 var cx = parseInt(el.style.left) + el.offsetWidth / 2;
                 var cy = parseInt(el.style.top) + el.offsetHeight / 2;
                 gameEngine.wrongTap(cx, cy);
+                if (this.autoMoveTimer) {
+                    clearTimeout(this.autoMoveTimer);
+                    this.autoMoveTimer = null;
+                }
                 setTimeout(() => {
-                    this.showInstruction(this.targetColor, null);
+                    this.showInstruction(this.targetColor, () => {
+                        this.startAutoMove();
+                    });
                 }, 600);
             }
         });
