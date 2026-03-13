@@ -117,7 +117,7 @@ create: function(colorObj) {
 
     el.dataset.colorCls = colorObj.cls;
 
-    toolsBox.onClick(el, () => {
+    var handleTap = (tapX, tapY) => {
 
         this.blinkCount = 0;
 
@@ -136,8 +136,31 @@ create: function(colorObj) {
             soundBlue.currentTime = 0;
             soundBlue.play();
 
-            gameEngine.score++;
-            gameEngine.updateUI();
+            // Accuracy-based scoring
+            var rect = el.getBoundingClientRect();
+            var centerX = rect.left + rect.width / 2;
+            var centerY = rect.top + rect.height / 2;
+            var radius = rect.width / 2;
+
+            var dist = Math.sqrt(
+                (tapX - centerX) * (tapX - centerX) +
+                (tapY - centerY) * (tapY - centerY)
+            );
+
+            var ratio = Math.min(dist / radius, 1); // 0 = perfect center, 1 = edge
+
+            var points;
+            if (ratio <= 0.3) {
+                points = 3; // Perfect center tap
+            } else if (ratio <= 0.65) {
+                points = 2; // Good tap
+            } else {
+                points = 1; // Edge tap
+            }
+
+            gameEngine.score += points;
+            gameEngine.updateUI(points, ratio);
+            gameEngine.showScorePopup(tapX, tapY, points);
 
             this.resetBoard();
 
@@ -146,10 +169,7 @@ create: function(colorObj) {
             soundRed.currentTime = 0;
             soundRed.play();
 
-            var cx = parseInt(el.style.left) + el.offsetWidth / 2;
-            var cy = parseInt(el.style.top) + el.offsetHeight / 2;
-
-            gameEngine.wrongTap(cx, cy);
+            gameEngine.wrongTap(tapX, tapY);
 
             if (this.autoMoveTimer) {
                 clearTimeout(this.autoMoveTimer);
@@ -160,7 +180,17 @@ create: function(colorObj) {
 
         }
 
+    };
+
+    el.addEventListener('click', function(e) {
+        handleTap(e.clientX, e.clientY);
     });
+
+    el.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        var touch = e.touches[0];
+        handleTap(touch.clientX, touch.clientY);
+    }, { passive: false });
 
     gameSpace.appendChild(el);
 
@@ -310,13 +340,21 @@ var gameEngine = {
 
     score: 0,
 
-    updateUI: function() {
+    updateUI: function(pointsEarned, accuracyRatio) {
 
-        console.log("Current Score:", this.score);
+        var accuracy = accuracyRatio !== undefined
+            ? Math.round((1 - accuracyRatio) * 100)
+            : 100;
+
+        console.log("Score:", this.score, "| +Points:", pointsEarned, "| Accuracy:", accuracy + "%");
 
         window.parent.postMessage({
             type: "scoreUpdate",
-            payload: { score: this.score }
+            payload: {
+                score: this.score,
+                pointsEarned: pointsEarned || 0,
+                accuracy: accuracy
+            }
         }, "*");
 
     },
@@ -350,6 +388,32 @@ var gameEngine = {
         popup.classList.remove('show-wrong');
         void popup.offsetWidth;
         popup.classList.add('show-wrong');
+
+    },
+
+    showScorePopup: function(x, y, points) {
+
+        var popup = document.createElement('div');
+        popup.className = 'score-popup';
+        popup.textContent = '+' + points;
+
+        if (points === 3) {
+            popup.dataset.grade = 'perfect';
+        } else if (points === 2) {
+            popup.dataset.grade = 'good';
+        } else {
+            popup.dataset.grade = 'ok';
+        }
+
+        popup.style.left = x + 'px';
+        popup.style.top  = y + 'px';
+
+        document.body.appendChild(popup);
+
+        setTimeout(function() { popup.classList.add('score-popup-fly'); }, 10);
+        setTimeout(function() {
+            if (popup.parentNode) popup.parentNode.removeChild(popup);
+        }, 900);
 
     }
 

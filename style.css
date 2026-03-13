@@ -542,3 +542,25 @@ h1, h2, h3, p, button {
     font-size: 1.6rem;
   }
 }
+
+/* Score popup (+1 / +2 / +3) */
+.score-popup {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  font-size: 2.2rem;
+  font-weight: 700;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 1;
+  transition: transform 0.8s ease-out, opacity 0.8s ease-out;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+}
+
+.score-popup[data-grade="perfect"] { color: #FFE033; } /* gold  */
+.score-popup[data-grade="good"]    { color: #4CDE7A; } /* green */
+.score-popup[data-grade="ok"]      { color: #58D1FF; } /* blue  */
+
+.score-popup.score-popup-fly {
+  transform: translate(-50%, -160%);
+  opacity: 0;
+}
